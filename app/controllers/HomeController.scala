@@ -13,7 +13,7 @@ import play.api.mvc._
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(greeterService: GreeterService)(cc: ControllerComponents) extends AbstractController(cc) {
+class HomeController @Inject()(@Named("client") greeterService: GreeterService)(cc: ControllerComponents) extends AbstractController(cc) {
 
   /**
    * Create an Action to render an HTML page.

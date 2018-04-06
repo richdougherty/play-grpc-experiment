@@ -16,8 +16,11 @@ import play.api.inject.ApplicationLifecycle
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
 
+/**
+ * A client [[GreeterService]] that can be injected into a Play application.
+ */
 @Singleton
-class PlayGreeterClient @Inject()(appLifecycle: ApplicationLifecycle)(implicit mat: Materializer, ec: ExecutionContext)
+class InjectedGreeterServiceClient @Inject()(appLifecycle: ApplicationLifecycle)(implicit mat: Materializer, ec: ExecutionContext)
     extends GreeterService {
 
   private val channel = {
@@ -52,7 +55,7 @@ class PlayGreeterClient @Inject()(appLifecycle: ApplicationLifecycle)(implicit m
   appLifecycle.addStopHook { () => Future(channel.shutdown().awaitTermination(10, TimeUnit.SECONDS)) }
 
   private val callOptions = CallOptions.DEFAULT
-  private val internalClient = new GreeterServiceClient(channel, callOptions)
+  private val internalClient: GreeterService = new GreeterServiceClient(channel, callOptions)
 
   override def sayHello(in: HelloRequest): Future[HelloReply] =
     internalClient.sayHello(in)
